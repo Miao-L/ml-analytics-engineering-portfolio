@@ -1,0 +1,111 @@
+class BikeRental:
+    """
+    A simple simulation of a bike rental application.
+    """
+
+    def __init__(self, total_bikes):
+        """
+        Initializes the BikeRental system.
+
+        Args:
+            total_bikes (int): The initial number of bikes available in the fleet.
+        """
+        if not isinstance(total_bikes, int) or total_bikes < 0:
+            print("Error: Total bikes must be a non-negative integer.")
+            self.total_bikes = 0
+            self.available_bikes = 0
+        else:
+            self.total_bikes = total_bikes
+            self.available_bikes = total_bikes
+        print(f"Bike Rental System initialized with {self.total_bikes} bikes.")
+
+    def display_available_bikes(self):
+        """
+        Displays the current number of bikes available for rent.
+        """
+        print(f"\nCurrently, there are {self.available_bikes} bikes available for rent.")
+
+    def rent_bike(self, num_bikes):
+        """
+        Allows a customer to rent bikes. This simplifies hourly, daily, and weekly options
+        into a single rental method for the simulation.
+
+        Args:
+            num_bikes (int): The number of bikes the customer wants to rent.
+
+        Returns:
+            bool: True if the rental was successful, False otherwise.
+        """
+        if not isinstance(num_bikes, int) or num_bikes <= 0:
+            print("Error: Please enter a positive number of bikes to rent.")
+            return False
+        if num_bikes > self.available_bikes:
+            print(f"Sorry, we only have {self.available_bikes} bikes left. You requested {num_bikes}.")
+            return False
+        
+        self.available_bikes -= num_bikes
+        print(f"You have rented {num_bikes} bike(s). Enjoy your ride!")
+        print(f"Remaining bikes: {self.available_bikes}")
+        return True
+
+    def return_bike(self, num_bikes):
+        """
+        Allows a customer to return bikes.
+
+        Args:
+            num_bikes (int): The number of bikes the customer wants to return.
+
+        Returns:
+            bool: True if the return was successful, False otherwise.
+        """
+        if not isinstance(num_bikes, int) or num_bikes <= 0:
+            print("Error: Please enter a positive number of bikes to return.")
+            return False
+        if self.available_bikes + num_bikes > self.total_bikes:
+            print("Error: You are trying to return more bikes than our total capacity or more than were rented.")
+            print("Please check the number of bikes you are returning.")
+            return False
+        
+        self.available_bikes += num_bikes
+        print(f"Thank you for returning {num_bikes} bike(s)! We appreciate your business.")
+        print(f"Available bikes now: {self.available_bikes}")
+        return True
+
+# --- How to use the BikeRental simulation ---
+if __name__ == "__main__":
+    print("--- Welcome to the Miao-Miao Bike Rental! ---")
+
+    # 1. Initialize the bike rental system with a certain number of bikes
+    shop = BikeRental(total_bikes=10)
+
+    # 2. Display available bikes
+    shop.display_available_bikes()
+
+    # 3. Simulate some rentals
+    print("\n--- Simulating Rentals ---")
+    shop.rent_bike(3)  # Rent 3 bikes
+    shop.display_available_bikes()
+
+    shop.rent_bike(5)   # Rent 5 bikes
+    shop.display_available_bikes()
+
+    shop.rent_bike(4)  # Try to rent more than available
+    shop.display_available_bikes()
+
+    shop.rent_bike(2) # Rent remaining 2 bikes
+    shop.display_available_bikes()
+
+
+    # 4. Simulate some returns
+    print("\n--- Simulating Returns ---")
+    shop.return_bike(3) # Return 3 bikes
+    shop.display_available_bikes()
+
+    shop.return_bike(8) # Try to return more bikes than possible (e.g., if only 7 were out)
+    shop.display_available_bikes()
+
+    shop.return_bike(5) # Return 5 more bikes
+    shop.display_available_bikes()
+
+    shop.return_bike(2) # Return the last 2 bikes, bringing it back to total
+    shop.display_available_bikes()
