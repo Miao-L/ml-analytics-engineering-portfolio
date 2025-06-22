@@ -1,0 +1,147 @@
+# Linear Regression
+# Check correlation
+# Model - check Interaction effects
+
+
+
+library(MASS)
+#Need to install package first
+#install.packages("ISLR")
+library(ISLR)
+
+# Simple Linear Regression
+#fix(Boston)
+
+#Get field names of the dataframe
+names(Boston)
+
+?Boston
+#? to get more information about the dataset
+
+#I am getting figure margins too large error
+#Run below command to fix
+#graphics.off()
+#Plot medv on Y an lstat on X axis
+plot(medv~lstat, Boston)
+
+#Fit the linear model
+lm.fit=lm(medv~lstat)
+lm.fit=lm(medv~lstat,data=Boston)
+#This will print out Coefficients
+lm.fit
+#Summary will print out more details
+summary(lm.fit)
+
+abline(lm.fit)
+abline(lm.fit,lwd=3)
+abline(lm.fit,lwd=3,col="red")
+
+attach(Boston)
+names(lm.fit)
+coef(lm.fit)
+
+#Confidence Interval
+#By default is 95% confidence interval
+confint(lm.fit)
+
+#Predict lstat with values 5,10,15 with additional pram confidence interval
+predict(lm.fit,data.frame(lstat=(c(5,10,15))), interval="confidence")
+predict(lm.fit,data.frame(lstat=(c(5,10,15))), interval="prediction")
+plot(lstat,medv)
+
+
+plot(lstat,medv,col="red")
+plot(lstat,medv,pch=20)
+plot(lstat,medv,pch="+")
+plot(1:20,1:20,pch=1:20)
+par(mfrow=c(2,2))
+plot(lm.fit)
+plot(predict(lm.fit), residuals(lm.fit))
+plot(predict(lm.fit), rstudent(lm.fit))
+plot(hatvalues(lm.fit))
+which.max(hatvalues(lm.fit))
+
+# Multiple Linear Regression
+# Results: look at P-value; both lstat and age are significant
+# Multiple R-squared:  0.5513. R-squared, the higher the better
+# F-statistic:   if we drop the two from the model
+fit2 = lm(medv~lstat+age, data=Boston)
+summary (fit2)
+
+# Interaction Terms
+summary(lm(medv~lstat*age,data=Boston))
+
+# Fit all but one
+# Results: notice "age" was significant when it was fit with "lstat" but now no longer significant
+# The reason "age" is no longer significant is because all other predictors are highly corrected to the "age" 
+fit3=lm(medv~., Boston)
+summary(fit3)
+par(mfrow=c(2,2))
+# Plot to check homogeneous
+# Top left chart: Residuals vs Fitted values; we are looking for non-linearity which is one flat line across the X-axis
+# If the population is NOT homogeneous, check my code for "Check for heteroscedasticity"
+plot(fit3)
+
+
+# [update] function
+# remove age and indus
+fit4=update(fit3,~.-age-indus)
+summary(fit4)
+
+# Non-linear Transformations of the Predictors
+# Quadratic term : lstat^2 (square)
+fit6=lm(medv~lstat+I(lstat^2))
+summary(fit6)
+attach(Boston)
+par(mfrow=c(1,1))
+plot(medv~lstat)
+points(lstat,fitted(fit6), col="red",pch=20)
+# Use poly function
+# Results: you can see the forth degree polynominal is getting over-fitting
+fit7=lm(medv~poly(lstat,4))
+points(lstat,fitted(fit7),col='blue',pch=20)
+plot(1:20,1:20,pch=1:20,cex=2)
+anova(lm.fit,lm.fit2)
+summary(lm(medv~log(rm),data=Boston))
+
+# Qualitative Predictors
+# Results: look at the p-value for Price+Age, it's not significant
+fix(Carseats)
+names(Carseats)
+# Print out summary of the dataframe
+summary(Careseats)
+lm.fit=lm(Sales~.+Income:Advertising+Price:Age,data=Carseats)
+summary(lm.fit)
+attach(Carseats)
+# Contrasts function shows you how R codes the variable
+contrasts(ShelveLoc)
+
+# Writing Functions
+regplot=function(x,y) {
+  fit=lm(y~x)
+  plot(x,y)
+  abline(fit,col='red')
+}
+# Test it out
+regplot(Price, Sales)
+# Make function more flexiable by adding "..."
+regplot=function(x,y,...){
+  fit=lm(y~x)
+  plot(x,y,...)
+  abline(fit,col='red')
+}
+regplot(Price,Sales, xlab='Price',ylab='Sales',col='blue',pch=20)
+
+LoadLibraries
+LoadLibraries()
+LoadLibraries=function(){
+ library(ISLR)
+ library(MASS)
+ print("The libraries have been loaded.")
+ }
+LoadLibraries
+LoadLibraries()
+
+#Credit: An Introduction to Statistical Learning
+
+
